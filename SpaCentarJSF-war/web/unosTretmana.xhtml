@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/osnovniTemplate.xhtml">
+
+
+            <ui:define name="content">
+
+                <div align="center">
+
+                    <div align="left" style="float: left;width: 45%;">
+                        <h:form id="frmTretman">  
+                            <p:growl id="grwPoruke" />
+                            <p:panel header="Unos Tretmana">
+                                <h:panelGrid id="pnlgTretman" columns="3">
+
+                                    <p:outputLabel value="Opis tretmana:" />
+                                    <p:inputText id="txtOpis" value="#{mbTretman.trenutniTretman.opis}" />
+                                    <p:message for="txtOpis" />
+
+                                    <p:outputLabel value="Trajanje tretmana u minutima:" />
+                                    <p:inputText id="txtTrajanje" value="#{mbTretman.trenutniTretman.trajanjeUMin}" />
+                                    <p:message for="txtTrajanje" />
+
+                                    <p:outputLabel value="Preparat:" />                                  
+
+                                </h:panelGrid>                                
+
+                          <p:dataTable id="tblPreparati" value="#{mbTretman.trenutniTretman.preparatList}" var="stavkaPreparat"
+                                       selectionMode="single" selection="#{mbPreparat.preparatZaBrisanje}"
+                                             rowKey="#{stavkaPreparat.preparatID}"
+                                       > 
+                                  
+                                    <p:column headerText="Preparat">
+                                        #{stavkaPreparat.naziv}
+                                    </p:column>
+                                    <p:column headerText="Proizvodjac" >
+                                        <p:inputText style="width: 75px" value="#{stavkaPreparat.proizvodjac.naziv}"  />
+                                    </p:column>
+                                    <p:column headerText="Cena">
+                                        <p:inputText value="#{stavkaPreparat.cena}" size="10" />
+                                    </p:column>
+
+
+
+                                </p:dataTable>
+
+                                <p:commandButton value="Sacuvaj tretman" action="#{mbTretman.sacuvajTretman()}"/>
+
+                            </p:panel>
+
+                        </h:form>
+
+                    </div>
+                    <h:form id="frmPreparat">
+                        <div align="center" style="float: left;width: 10%">
+
+                            <br/><br/><br/>
+
+                            <p:commandButton value="&lt;-" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.dodajPreparat()}" />
+                            <br/><br/>
+                            <p:commandButton value="-&gt;" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.ukloniPreparat()}" />
+
+
+
+                        </div>
+
+                        <div align="left" style="float: left;width: 45%;" >
+
+                            <p:messages id="poruke" />
+
+                            <p:panel header="Obrada preparata">
+
+                               <p:dataTable value="#{mbPreparat.listaPreparata}" var="preparat" 
+                                             selectionMode="single" selection="#{mbPreparat.izabraniPreparat}"
+                                             rowKey="#{preparat.preparatID}"
+                                             > 
+                                <f:facet name="header">
+                                    <p:commandButton value="Dodaj novi" icon="ui-icon-plus" />
+                                </f:facet>
+                                <p:ajax event="rowSelect" process="@this" update=":frmPreparat:pnlgPreparat" />
+
+                                <p:column filterBy="#{preparat.naziv}" headerText="Naziv">
+                                    #{preparat.naziv}
+                                </p:column>
+                                <p:column headerText="Cena">
+                                    #{preparat.cena}
+                                </p:column>
+                                <p:column  headerText="Naziv">
+                                    #{preparat.proizvodjac.naziv}
+                                </p:column>
+
+                               </p:dataTable>
+
+
+                                <br/>
+                                <p:separator />
+
+                                <h:panelGrid id="pnlgPreparat" columns="3">
+
+                                    <p:outputLabel value="Sifra:" />
+                                    <p:inputText id="txtPreparatID" value="#{mbPreparat.izabraniPreparat.preparatID}" readonly="true" />
+                                    <p:message for="txtPreparatID" />
+
+                                    <p:outputLabel value="Naziv:" />
+                                    <p:inputText id="txtNaziv" value="#{mbPreparat.izabraniPreparat.naziv}" readonly="true" />
+                                    <p:message for="txtNaziv" />
+
+                                    <p:outputLabel value="Cena:" />
+                                    <p:inputText id="txtCena" value="#{mbPreparat.izabraniPreparat.cena}" readonly="true" />
+                                    <p:message for="txtCena" />
+
+                                    <p:outputLabel value="Proizvodjac:" />
+                                    <p:inputText id="txtProizvodjac" value="#{mbPreparat.izabraniPreparat.proizvodjac.naziv}" />
+                                    <p:message for="txtProizvodjac" />
+                                </h:panelGrid>
+
+
+
+                            </p:panel>
+
+
+
+                        </div>
+                    </h:form>
+
+                </div>
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
