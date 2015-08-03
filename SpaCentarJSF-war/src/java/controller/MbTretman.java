@@ -106,7 +106,7 @@ public class MbTretman{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Tretman već sadrži preparat", ""));
         }
 
-        //   mbPreparat.setIzabraniPreparat(null);
+          //mbPreparat.setIzabraniPreparat(null);
     }
 
     public void ukloniPreparat(){

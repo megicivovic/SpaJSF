@@ -33,11 +33,11 @@
 
                                 </h:panelGrid>                                
 
-                          <p:dataTable id="tblPreparati" value="#{mbTretman.trenutniTretman.preparatList}" var="stavkaPreparat"
-                                       selectionMode="single" selection="#{mbPreparat.preparatZaBrisanje}"
+                                <p:dataTable id="tblPreparati" value="#{mbTretman.trenutniTretman.preparatList}" var="stavkaPreparat"
+                                             selectionMode="single" selection="#{mbPreparat.preparatZaBrisanje}"
                                              rowKey="#{stavkaPreparat.preparatID}"
-                                       > 
-                                  
+                                             > 
+
                                     <p:column headerText="Preparat">
                                         #{stavkaPreparat.naziv}
                                     </p:column>
@@ -48,12 +48,11 @@
                                         <p:inputText value="#{stavkaPreparat.cena}" size="10" />
                                     </p:column>
 
-
-
+                                    <p:ajax event="rowSelect" update="@this" />
                                 </p:dataTable>
-
-                                <p:commandButton value="Sacuvaj tretman" action="#{mbTretman.sacuvajTretman()}"/>
-
+                                <br>
+                                    <p:commandButton value="Sacuvaj tretman" action="#{mbTretman.sacuvajTretman()}"/>
+                                </br>
                             </p:panel>
 
                         </h:form>
@@ -78,26 +77,26 @@
 
                             <p:panel header="Obrada preparata">
 
-                               <p:dataTable value="#{mbPreparat.listaPreparata}" var="preparat" 
+                                <p:dataTable value="#{mbPreparat.listaPreparata}" var="preparat" 
                                              selectionMode="single" selection="#{mbPreparat.izabraniPreparat}"
                                              rowKey="#{preparat.preparatID}"
                                              > 
-                                <f:facet name="header">
-                                    <p:commandButton value="Dodaj novi" icon="ui-icon-plus" />
-                                </f:facet>
-                                <p:ajax event="rowSelect" process="@this" update=":frmPreparat:pnlgPreparat" />
+                                    <f:facet name="header">
+                                        <p:commandButton value="Dodaj novi" icon="ui-icon-plus" />
+                                    </f:facet>
+                                    <p:ajax event="rowSelect" process="@this" update=":frmPreparat:pnlgPreparat" />
 
-                                <p:column filterBy="#{preparat.naziv}" headerText="Naziv">
-                                    #{preparat.naziv}
-                                </p:column>
-                                <p:column headerText="Cena">
-                                    #{preparat.cena}
-                                </p:column>
-                                <p:column  headerText="Naziv">
-                                    #{preparat.proizvodjac.naziv}
-                                </p:column>
+                                    <p:column filterBy="#{preparat.naziv}" headerText="Naziv">
+                                        #{preparat.naziv}
+                                    </p:column>
+                                    <p:column headerText="Cena">
+                                        #{preparat.cena}
+                                    </p:column>
+                                    <p:column  headerText="Naziv">
+                                        #{preparat.proizvodjac.naziv}
+                                    </p:column>
 
-                               </p:dataTable>
+                                </p:dataTable>
 
 
                                 <br/>
