@@ -24,7 +24,7 @@ import model.TretmanFacade;
  */
 @ManagedBean
 @ViewScoped
-public class MbTretman{
+public class MbTretman {
 
     @EJB
     private PreparatFacade preparatFacade;
@@ -65,11 +65,17 @@ public class MbTretman{
     public String sacuvajTretman() {
 
         try {
+            double cena = 0;
+            for (Preparat preparat : trenutniTretman.getPreparatList()) {
+                cena += preparat.getCena();
+            }
+            trenutniTretman.setCena(cena);
             if (izmena) {
                 tretmanFacade.edit(trenutniTretman);
                 System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno izmenjen");
 
             } else {
+
                 tretmanFacade.create(trenutniTretman);
                 System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno kreiran");
 
@@ -106,11 +112,11 @@ public class MbTretman{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Tretman već sadrži preparat", ""));
         }
 
-          //mbPreparat.setIzabraniPreparat(null);
+        //mbPreparat.setIzabraniPreparat(null);
     }
 
-    public void ukloniPreparat(){
-      System.out.println("brisem stavku:" + mbPreparat.getPreparatZaBrisanje());
+    public void ukloniPreparat() {
+        System.out.println("brisem stavku:" + mbPreparat.getPreparatZaBrisanje());
 
         if (mbPreparat.getPreparatZaBrisanje() == null) {
 
@@ -118,8 +124,9 @@ public class MbTretman{
             return;
         }
         trenutniTretman.getPreparatList().remove(mbPreparat.getPreparatZaBrisanje());
-    
+
     }
+
     public boolean isIzmena() {
         return izmena;
     }
