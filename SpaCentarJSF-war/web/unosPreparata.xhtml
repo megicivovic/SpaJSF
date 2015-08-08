@@ -36,7 +36,7 @@
                 
                            
                 <h:outputLabel value="Proizvodjac:" />     
-                <h:selectOneMenu id="cmbProizvodjac" value="#{mbPreparat.preparat.proizvodjac}" converter="mestoKNV" >
+                <h:selectOneMenu id="cmbProizvodjac" value="#{mbPreparat.preparat.proizvodjac}"  >
                     <f:selectItems value="#{mbPreparat.listaProizvodjaca}" var="proizvodjac" itemValue="#{proizvodjac}" itemLabel="#{proizvodjac.naziv}" />
                 
                 </h:selectOneMenu>  

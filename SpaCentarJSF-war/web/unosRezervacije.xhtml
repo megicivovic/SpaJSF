@@ -18,14 +18,14 @@
                     <div align="left" style="float: left;width: 45%;">
                         <h:form id="frmTretman">  
                             <p:growl id="grwPoruke" />
-                            <p:panel header="Unos Tretmana">
+                            <p:panel header="Unos rezervacije">
                                 <h:panelGrid id="pnlgTretman" columns="3">
 
-                                    <p:outputLabel value="Opis tretmana:" />
+                                    <p:outputLabel value="Datum rezervacije:" />
                                     <p:inputText id="txtOpis" value="#{mbTretman.trenutniTretman.opis}" />
                                     <p:message for="txtOpis" />
 
-                                    <p:outputLabel value="Trajanje tretmana u minutima:" />
+                                    <p:outputLabel value="Vreme:" />
                                     <p:inputText id="txtTrajanje" value="#{mbTretman.trenutniTretman.trajanjeUMin}" />
                                     <p:message for="txtTrajanje" />
 

@@ -55,7 +55,7 @@ public class MbTretman {
 
     public String pokreniIzmenu(Tretman tretman) {
 
-        this.tretman = tretman;
+        this.trenutniTretman = tretman;
         izmena = true;
 
         return "unosTretmana";
