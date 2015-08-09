@@ -22,20 +22,21 @@
                                 <h:panelGrid id="pnlgTretman" columns="3">
 
                                     <p:outputLabel value="Datum rezervacije:" />
-                                    <p:inputText id="txtOpis" value="#{mbTretman.trenutniTretman.opis}" />
+                                    <p:outputLabel for="datetime" value="Datetime:" />
+                                    <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}"
+                                                pattern="MM/dd/yyyy HH:mm:ss" />
+
+                                    <p:inputText id="txtOpis" value="#{mbRezervacija.rezervacija.vreme}" />
                                     <p:message for="txtOpis" />
 
-                                    <p:outputLabel value="Vreme:" />
-                                    <p:inputText id="txtTrajanje" value="#{mbTretman.trenutniTretman.trajanjeUMin}" />
-                                    <p:message for="txtTrajanje" />
 
-                                    <p:outputLabel value="Preparat:" />                                  
+                                    <p:outputLabel value="Raspored:" />                                  
 
                                 </h:panelGrid>                                
 
-                                <p:dataTable id="tblPreparati" value="#{mbTretman.trenutniTretman.preparatList}" var="stavkaPreparat"
-                                             selectionMode="single" selection="#{mbPreparat.preparatZaBrisanje}"
-                                             rowKey="#{stavkaPreparat.preparatID}"
+                                <p:dataTable id="tblPreparati" value="#{mbRezervacija.listaRasporeda}" var="raspored"
+                                             selectionMode="single" selection="#{mbRezervacija.rezervacija.raspored}"
+                                             rowKey="#{raspored.rasporedID}"
                                              > 
 
                                     <p:column headerText="Preparat">
@@ -51,9 +52,18 @@
                                     <p:ajax event="rowSelect" update="@this" />
                                 </p:dataTable>
                                 <br><div align="center" draggable="false" >
-                                    <p:commandButton value="Sacuvaj tretman"   action="#{mbTretman.sacuvajTretman()}"/>
-                               </div>
+                                        <p:commandButton value="Sacuvaj tretman"   action="#{mbTretman.sacuvajTretman()}" icon="ui-icon-check" />
+                                    </div>
                                 </br>
+                                <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
+                                    <p:panelGrid id="display" columns="2" columnClasses="label,value">
+                                        <h:outputText value="Datetime:" />
+                                        <h:outputText value="#{mbRezervacija.date10}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                        </h:outputText>
+
+                                    </p:panelGrid>
+                                </p:dialog>
                             </p:panel>
 
                         </h:form>

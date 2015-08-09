@@ -7,12 +7,18 @@ package controller;
 
 import entities.Raspored;
 import entities.Rezervacija;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import model.RasporedFacade;
 import model.RezervacijaFacade;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -31,6 +37,8 @@ public class MbRezervacija {
     
     private Rezervacija rezervacija;
     private List<Raspored> listaRasporeda;
+     private Date date10;
+     
     /**
      * Creates a new instance of MbRezervacija
      */
@@ -69,6 +77,26 @@ public class MbRezervacija {
         this.listaRasporeda = listaRasporeda;
     }
     
-    
+   
+    public void onDateSelect(SelectEvent event) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Date Selected", format.format(event.getObject())));
+    }
+     
+    public void click() {
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+         
+        requestContext.update("form:display");
+        requestContext.execute("PF('dlg').show()");
+    }
+
+    public Date getDate10() {
+        return date10;
+    }
+
+    public void setDate10(Date date10) {
+        this.date10 = date10;
+    }
     
 }
