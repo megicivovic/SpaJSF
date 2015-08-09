@@ -7,13 +7,13 @@
         <title>Početna strana</title> 
     </h:head>
     <h:body>
-  <ui:define name="top">
-                <h:outputText value="Dobrodošli u SPA-M,#{mbKorisnik.korisnik.korisnickoIme}!"/>
-            </ui:define>
+
         <ui:composition template="./WEB-INF/osnovniTemplate.xhtml">
 
 
-          
+            <ui:define name="top">
+                Dobrodošli u SPA-M!
+            </ui:define>
             <ui:define name="content">
 
                 <h:form id="frmPocetna" >
