@@ -10,6 +10,7 @@ import entities.Rezervacija;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -37,6 +38,7 @@ public class MbRezervacija {
     
     private Rezervacija rezervacija;
     private List<Raspored> listaRasporeda;
+    private List<Rezervacija> listaRezervacija;
      private Date date10;
      
     /**
@@ -45,6 +47,11 @@ public class MbRezervacija {
     public MbRezervacija() {
     }
 
+    @PostConstruct
+    public void inicijalizujPodatke(){
+    listaRasporeda=rasporedFacade.findAll();
+    listaRezervacija=rezervacijaFacade.findAll();
+    }
     public RasporedFacade getRasporedFacade() {
         return rasporedFacade;
     }
@@ -84,11 +91,12 @@ public class MbRezervacija {
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Date Selected", format.format(event.getObject())));
     }
      
-    public void click() {
+    public void sacuvajRezervaciju() {
         RequestContext requestContext = RequestContext.getCurrentInstance();
          
         requestContext.update("form:display");
         requestContext.execute("PF('dlg').show()");
+        rezervacijaFacade.create(rezervacija);
     }
 
     public Date getDate10() {
@@ -97,6 +105,14 @@ public class MbRezervacija {
 
     public void setDate10(Date date10) {
         this.date10 = date10;
+    }
+
+    public List<Rezervacija> getListaRezervacija() {
+        return listaRezervacija;
+    }
+
+    public void setListaRezervacija(List<Rezervacija> listaRezervacija) {
+        this.listaRezervacija = listaRezervacija;
     }
     
 }

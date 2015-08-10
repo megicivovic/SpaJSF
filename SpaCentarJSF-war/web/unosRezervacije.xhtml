@@ -21,14 +21,6 @@
                             <p:panel header="Unos rezervacije">
                                 <h:panelGrid id="pnlgTretman" columns="3">
 
-                                    <p:outputLabel value="Datum rezervacije:" />
-                                    <p:outputLabel for="datetime" value="Datetime:" />
-                                    <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}"
-                                                pattern="MM/dd/yyyy HH:mm:ss" />
-
-                                    <p:inputText id="txtOpis" value="#{mbRezervacija.rezervacija.vreme}" />
-                                    <p:message for="txtOpis" />
-
 
                                     <p:outputLabel value="Raspored:" />                                  
 
@@ -36,32 +28,32 @@
 
                                 <p:dataTable id="tblPreparati" value="#{mbRezervacija.listaRasporeda}" var="raspored"
                                              selectionMode="single" selection="#{mbRezervacija.rezervacija.raspored}"
-                                             rowKey="#{raspored.rasporedID}"
+                                             rowKey="#{raspored.rasporedPK}"
                                              > 
 
-                                    <p:column headerText="Preparat">
-                                        #{stavkaPreparat.naziv}
-                                    </p:column>
-                                    <p:column headerText="Proizvodjac" >
-                                        <p:inputText style="width: 75px" value="#{stavkaPreparat.proizvodjac.naziv}"  />
-                                    </p:column>
-                                    <p:column headerText="Cena">
-                                        <p:inputText value="#{stavkaPreparat.cena}" size="10" />
-                                    </p:column>
 
+                                    <p:column filterBy="#{raspored.zaposleni.imePrezime}" headerText="Zaposleni">
+                                        #{raspored.zaposleni.imePrezime}
+                                    </p:column>
+                                    <p:column filterBy="#{raspored.tretman.opis}" headerText="Tretman" >
+                                        #{raspored.tretman.opis}
+                                    </p:column>
                                     <p:ajax event="rowSelect" update="@this" />
                                 </p:dataTable>
+
                                 <br><div align="center" draggable="false" >
-                                        <p:commandButton value="Sacuvaj tretman"   action="#{mbTretman.sacuvajTretman()}" icon="ui-icon-check" />
-                                    </div>
-                                </br>
+                                        <p:outputLabel for="datetime" value="Datum rezervacije" />
+                                        <p:calendar id="datetime" value="#{mbRezervacija.date10}" pattern="MM/dd/yyyy HH:mm:ss" />
+                                    </div></br>
+                                <br><div align="center" draggable="false" >
+                                        <p:commandButton value="Sacuvaj tretman" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
+                                    </div></br>
                                 <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
                                     <p:panelGrid id="display" columns="2" columnClasses="label,value">
                                         <h:outputText value="Datetime:" />
-                                        <h:outputText value="#{mbRezervacija.date10}">
+                                        <h:outputText value="#{calendarView.date10}">
                                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                                         </h:outputText>
-
                                     </p:panelGrid>
                                 </p:dialog>
                             </p:panel>
@@ -72,13 +64,7 @@
                     <h:form id="frmPreparat">
                         <div align="center" style="float: left;width: 10%">
 
-                            <br/><br/><br/>
-
-                            <p:commandButton value="&lt;-" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.dodajPreparat()}" />
-                            <br/><br/>
-                            <p:commandButton value="-&gt;" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.ukloniPreparat()}" />
-
-
+                            <br/>                    
 
                         </div>
 
@@ -86,54 +72,28 @@
 
                             <p:messages id="poruke" />
 
-                            <p:panel header="Obrada preparata">
+                            <p:panel header="Pregled raspoloživosti:">
 
-                                <p:dataTable value="#{mbPreparat.listaPreparata}" var="preparat" 
-                                             selectionMode="single" selection="#{mbPreparat.izabraniPreparat}"
-                                             rowKey="#{preparat.preparatID}"
-                                             > 
-                                    <f:facet name="header">
-                                        <p:commandButton value="Dodaj novi" icon="ui-icon-plus"/>
-                                    </f:facet>
-                                    <p:ajax event="rowSelect" process="@this" update=":frmPreparat:pnlgPreparat" />
+                                <p:dataTable value="#{mbRezervacija.listaRezervacija}" var="rezervacija"                                              
+                                             rowKey="#{rezervacija.rezervacijaID}"
+                                             >                                   
 
-                                    <p:column filterBy="#{preparat.naziv}" headerText="Naziv">
-                                        #{preparat.naziv}
+                                    <p:column filterBy="#{rezervacija.raspored.zaposleni.imePrezime}" headerText="Zaposleni">
+                                        #{rezervacija.raspored.zaposleni.imePrezime}
                                     </p:column>
-                                    <p:column headerText="Cena">
-                                        #{preparat.cena}
+                                    <p:column filterBy="#{rezervacija.raspored.tretman.opis}" headerText="Tretman">
+                                        #{rezervacija.raspored.tretman.opis}
                                     </p:column>
-                                    <p:column  headerText="Proizvodjac">
-                                        #{preparat.proizvodjac.naziv}
-                                    </p:column>
-
+                                    <p:column  filterBy=" #{rezervacija.vreme.hours}" headerText="Vreme">
+                                        <h:outputText value="#{rezervacija.vreme}">
+                                            <f:convertDateTime 
+                                                pattern="HH:mm, dd/MM/yyyy" />
+                                        </h:outputText> 
+                                    </p:column>                                   
                                 </p:dataTable>
 
 
-                                <br/>
-                                <p:separator />
-
-                                <h:panelGrid id="pnlgPreparat" columns="3">
-
-                                    <p:outputLabel value="Sifra:" />
-                                    <p:inputText id="txtPreparatID" value="#{mbPreparat.izabraniPreparat.preparatID}" readonly="true" />
-                                    <p:message for="txtPreparatID" />
-
-                                    <p:outputLabel value="Naziv:" />
-                                    <p:inputText id="txtNaziv" value="#{mbPreparat.izabraniPreparat.naziv}" readonly="true" />
-                                    <p:message for="txtNaziv" />
-
-                                    <p:outputLabel value="Cena:" />
-                                    <p:inputText id="txtCena" value="#{mbPreparat.izabraniPreparat.cena}" readonly="true" />
-                                    <p:message for="txtCena" />
-
-                                    <p:outputLabel value="Proizvodjac:" />
-                                    <p:inputText id="txtProizvodjac" value="#{mbPreparat.izabraniPreparat.proizvodjac.naziv}" />
-                                    <p:message for="txtProizvodjac" />
-                                </h:panelGrid>
-
-
-
+                                <br/>                             
                             </p:panel>
 
 
