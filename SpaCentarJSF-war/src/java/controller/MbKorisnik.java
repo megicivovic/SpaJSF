@@ -23,7 +23,7 @@ public class MbKorisnik {
 
     @EJB
     private KlijentFacade klijentFacade;
-    private Klijent korisnik;
+    private  Klijent korisnik;
 
     public MbKorisnik() {
     }
@@ -41,7 +41,7 @@ public class MbKorisnik {
         this.klijentFacade = klijentFacade;
     }
 
-    public Klijent getKorisnik() {
+    public  Klijent getKorisnik() {
         return korisnik;
     }
 
@@ -56,6 +56,7 @@ public class MbKorisnik {
         korisnickoIme[1] = korisnik.getKorisnickaSifra();
         Klijent ulogovaniKorisnik = (Klijent) klijentFacade.findByProperty(korisnickoIme);
         if (ulogovaniKorisnik != null) {
+            korisnik=ulogovaniKorisnik;
             return "index?faces-redirect=true";
         }
         else return "login";

@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.PreparatFacade;
@@ -31,13 +32,10 @@ public class MbTretman {
     @EJB
     private TretmanFacade tretmanFacade;
 
-    private boolean izmena = false;
-    private Tretman tretman;
-    private Tretman trenutniTretman;
+    private static boolean izmena = false; 
+    private static Tretman trenutniTretman;
 
-    private List<Preparat> listaPreparata;
-
-    @ManagedProperty(value = "#{mbPreparat}")
+     @ManagedProperty(value = "#{mbPreparat}")
     private MbPreparat mbPreparat;
 
     public MbTretman() {
@@ -45,7 +43,8 @@ public class MbTretman {
 
     @PostConstruct
     public void inicijalizujPodatke() {
-        trenutniTretman = new Tretman();
+        if (!izmena)
+        trenutniTretman = new Tretman();       
     }
 
     public List<Tretman> findAll() {
@@ -55,8 +54,8 @@ public class MbTretman {
 
     public String pokreniIzmenu(Tretman tretman) {
 
-        this.trenutniTretman = tretman;
-        izmena = true;
+        setTrenutniTretman(tretman);
+     izmena = true;
 
         return "unosTretmana";
 
@@ -135,22 +134,7 @@ public class MbTretman {
         this.izmena = izmena;
     }
 
-    public Tretman getTretman() {
-        return tretman;
-    }
-
-    public void setTretman(Tretman tretman) {
-        this.tretman = tretman;
-    }
-
-    public List<Preparat> getListaPreparata() {
-        return listaPreparata;
-    }
-
-    public void setListaPreparata(List<Preparat> listaPreparata) {
-        this.listaPreparata = listaPreparata;
-    }
-
+     
     public Tretman getTrenutniTretman() {
         return trenutniTretman;
     }

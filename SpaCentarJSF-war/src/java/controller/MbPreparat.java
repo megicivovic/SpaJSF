@@ -31,7 +31,7 @@ public class MbPreparat {
     @EJB
     private PreparatFacade preparatFacade;
 
-    private boolean izmena = false;
+    private static boolean izmena = false;
     private Preparat preparat;
     private Preparat izabraniPreparat;
     private Preparat preparatZaBrisanje;
@@ -68,7 +68,7 @@ public class MbPreparat {
     }
 
     public void setIzmena(boolean izmena) {
-        this.izmena = izmena;
+        MbPreparat.izmena = izmena;
     }
 
     public Preparat getPreparat() {

@@ -32,10 +32,10 @@
                                              > 
 
 
-                                    <p:column filterBy="#{raspored.zaposleni.imePrezime}" headerText="Zaposleni">
+                                    <p:column headerText="Zaposleni">
                                         #{raspored.zaposleni.imePrezime}
                                     </p:column>
-                                    <p:column filterBy="#{raspored.tretman.opis}" headerText="Tretman" >
+                                    <p:column headerText="Tretman" >
                                         #{raspored.tretman.opis}
                                     </p:column>
                                     <p:ajax event="rowSelect" update="@this" />
@@ -43,16 +43,16 @@
 
                                 <br><div align="center" draggable="false" >
                                         <p:outputLabel for="datetime" value="Datum rezervacije" />
-                                        <p:calendar id="datetime" value="#{mbRezervacija.date10}" pattern="MM/dd/yyyy HH:mm:ss" />
+                                        <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" />
                                     </div></br>
                                 <br><div align="center" draggable="false" >
-                                        <p:commandButton value="Sacuvaj tretman" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
+                                        <p:commandButton value="Sacuvaj rezervaciju" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
                                     </div></br>
                                 <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
                                     <p:panelGrid id="display" columns="2" columnClasses="label,value">
                                         <h:outputText value="Datetime:" />
                                         <h:outputText value="#{calendarView.date10}">
-                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
                                         </h:outputText>
                                     </p:panelGrid>
                                 </p:dialog>
@@ -84,10 +84,11 @@
                                     <p:column filterBy="#{rezervacija.raspored.tretman.opis}" headerText="Tretman">
                                         #{rezervacija.raspored.tretman.opis}
                                     </p:column>
-                                    <p:column  filterBy=" #{rezervacija.vreme.hours}" headerText="Vreme">
+                                    <!--filtriranje po datumu-->
+                                    <p:column  filterBy=" #{rezervacija.vreme.date}" filterMatchMode="contains" headerText="Vreme">
                                         <h:outputText value="#{rezervacija.vreme}">
                                             <f:convertDateTime 
-                                                pattern="HH:mm, dd/MM/yyyy" />
+                                                pattern="dd/MM/yyyy HH:mm:ss" />
                                         </h:outputText> 
                                     </p:column>                                   
                                 </p:dataTable>

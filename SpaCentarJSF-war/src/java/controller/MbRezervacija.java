@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.RasporedFacade;
@@ -35,8 +36,11 @@ public class MbRezervacija {
     
     @EJB
     private RezervacijaFacade rezervacijaFacade;
+    @ManagedProperty("#{mbKorisnik}")
+    private MbKorisnik mbKorisnik;
     
     private Rezervacija rezervacija;
+    
     private List<Raspored> listaRasporeda;
     private List<Rezervacija> listaRezervacija;
      private Date date10;
@@ -51,6 +55,8 @@ public class MbRezervacija {
     public void inicijalizujPodatke(){
     listaRasporeda=rasporedFacade.findAll();
     listaRezervacija=rezervacijaFacade.findAll();
+    rezervacija= new Rezervacija();
+            
     }
     public RasporedFacade getRasporedFacade() {
         return rasporedFacade;
@@ -92,10 +98,12 @@ public class MbRezervacija {
     }
      
     public void sacuvajRezervaciju() {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-         
-        requestContext.update("form:display");
-        requestContext.execute("PF('dlg').show()");
+//        RequestContext requestContext = RequestContext.getCurrentInstance();         
+//        requestContext.update("form:display");
+//        requestContext.execute("PF('dlg').show()");
+        
+        rezervacija.setKlijentID(mbKorisnik.getKorisnik());
+        System.out.println("Ubacujem rezeraciju korisnika "+mbKorisnik.getKorisnik());
         rezervacijaFacade.create(rezervacija);
     }
 
@@ -114,5 +122,14 @@ public class MbRezervacija {
     public void setListaRezervacija(List<Rezervacija> listaRezervacija) {
         this.listaRezervacija = listaRezervacija;
     }
+
+    public MbKorisnik getMbKorisnik() {
+        return mbKorisnik;
+    }
+
+    public void setMbKorisnik(MbKorisnik mbKorisnik) {
+        this.mbKorisnik = mbKorisnik;
+    }
+    
     
 }
