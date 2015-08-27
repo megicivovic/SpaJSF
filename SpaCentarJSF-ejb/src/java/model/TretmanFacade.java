@@ -5,10 +5,13 @@
  */
 package model;
 
+import entities.Rezervacija;
 import entities.Tretman;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,5 +30,17 @@ public class TretmanFacade extends AbstractFacade<Tretman> {
     public TretmanFacade() {
         super(Tretman.class);
     }
+
+    public Tretman findByProperty(int param) {
+         Query query = em.createQuery("FROM Tretman t where t.tretmanID= :value1");
+        query.setParameter("value1", param);       
+        List<Tretman> results = query.getResultList();
+        if (results.size()==1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
+    
     
 }

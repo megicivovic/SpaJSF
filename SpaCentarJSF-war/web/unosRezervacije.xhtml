@@ -10,104 +10,96 @@
 
         <ui:composition template="./WEB-INF/osnovniTemplate.xhtml">
 
+                <ui:define name="content">
 
-            <ui:define name="content">
+                    <div align="center">
 
-                <div align="center">
+                        <div align="left" style="float: left;width: 45%;">
+                            <h:form id="frmTretman">  
+                                <p:growl id="grwPoruke" />
+                                <p:panel header="Unos rezervacije">
+                                    <h:panelGrid id="pnlgTretman" columns="3">
+                                        <p:outputLabel value="Raspored:" />                                 
+                                    </h:panelGrid>                                
 
-                    <div align="left" style="float: left;width: 45%;">
-                        <h:form id="frmTretman">  
-                            <p:growl id="grwPoruke" />
-                            <p:panel header="Unos rezervacije">
-                                <h:panelGrid id="pnlgTretman" columns="3">
-
-
-                                    <p:outputLabel value="Raspored:" />                                  
-
-                                </h:panelGrid>                                
-
-                                <p:dataTable id="tblPreparati" value="#{mbRezervacija.listaRasporeda}" var="raspored"
-                                             selectionMode="single" selection="#{mbRezervacija.rezervacija.raspored}"
-                                             rowKey="#{raspored.rasporedPK}"
-                                             > 
+                                    <p:dataTable id="tblPreparati" value="#{mbRezervacija.listaRasporeda}" var="raspored"
+                                                 selectionMode="single" selection="#{mbRezervacija.rezervacija.raspored}"
+                                                 rowKey="#{raspored.rasporedPK}"
+                                                 > 
 
 
-                                    <p:column headerText="Zaposleni">
-                                        #{raspored.zaposleni.imePrezime}
-                                    </p:column>
-                                    <p:column headerText="Tretman" >
-                                        #{raspored.tretman.opis}
-                                    </p:column>
-                                    <p:ajax event="rowSelect" update="@this" />
-                                </p:dataTable>
+                                        <p:column headerText="Zaposleni">
+                                            #{raspored.zaposleni.imePrezime}
+                                        </p:column>
+                                        <p:column headerText="Tretman" >
+                                            #{raspored.tretman.opis}
+                                        </p:column>
+                                        <p:ajax event="rowSelect" update="@this" />
+                                    </p:dataTable>
 
-                                <br><div align="center" draggable="false" >
-                                        <p:outputLabel for="datetime" value="Datum rezervacije" />
-                                        <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" />
-                                    </div></br>
-                                <br><div align="center" draggable="false" >
-                                        <p:commandButton value="Sacuvaj rezervaciju" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
-                                    </div></br>
-                                <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
-                                    <p:panelGrid id="display" columns="2" columnClasses="label,value">
-                                        <h:outputText value="Datetime:" />
-                                        <h:outputText value="#{calendarView.date10}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-                                        </h:outputText>
-                                    </p:panelGrid>
-                                </p:dialog>
-                            </p:panel>
+                                    <br><div align="center" draggable="false" >
+                                            <p:outputLabel for="datetime" value="Datum rezervacije" />
+                                            <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                        </div></br>
+                                    <br><div align="center" draggable="false" >
+                                            <p:commandButton value="Sacuvaj rezervaciju" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
+                                        </div></br>
+                                    <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
+                                        <p:panelGrid id="display" columns="2" columnClasses="label,value">
+                                            <h:outputText value="Datetime:" />
+                                            <h:outputText value="#{calendarView.date10}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+                                            </h:outputText>
+                                        </p:panelGrid>
+                                    </p:dialog>
+                                </p:panel>
 
+                            </h:form>
+
+                        </div>
+                        <h:form id="frmPreparat">
+                            <div align="center" style="float: left;width: 10%">
+
+                                <br/>                    
+
+                            </div>
+
+                            <div align="left" style="float: left;width: 45%;" >
+
+                                <p:messages id="poruke" />
+
+                                <p:panel header="Pregled raspoloživosti:">
+
+                                    <p:dataTable value="#{mbRezervacija.listaRezervacija}" filteredValue="#{mbRezervacija.filtriranaListaRezervacija}" var="rezervacija"                                              
+                                                 rowKey="#{rezervacija.rezervacijaID}"
+                                                 >                                   
+                                        <p:ajax event="filter" listener="#{mbRezervacija.filterListener}"/>
+                                        <p:column filterBy="#{rezervacija.raspored.zaposleni.imePrezime}" headerText="Zaposleni">
+                                            #{rezervacija.raspored.zaposleni.imePrezime}
+                                        </p:column>
+                                        <p:column filterBy="#{rezervacija.raspored.tretman.opis}" headerText="Tretman">
+                                            #{rezervacija.raspored.tretman.opis}
+                                        </p:column>
+                                        <!--filtriranje po datumu-->
+                                        <p:column  filterBy=" #{rezervacija.vreme.date}" filterMatchMode="contains" headerText="Vreme">
+                                            <h:outputText value="#{rezervacija.vreme}">
+                                                <f:convertDateTime 
+                                                    pattern="dd/MM/yyyy HH:mm:ss" />
+                                            </h:outputText> 
+                                        </p:column>                                   
+                                    </p:dataTable>
+
+
+                                    <br/>                             
+                                </p:panel>
+
+
+
+                            </div>
                         </h:form>
-
                     </div>
-                    <h:form id="frmPreparat">
-                        <div align="center" style="float: left;width: 10%">
-
-                            <br/>                    
-
-                        </div>
-
-                        <div align="left" style="float: left;width: 45%;" >
-
-                            <p:messages id="poruke" />
-
-                            <p:panel header="Pregled raspoloživosti:">
-
-                                <p:dataTable value="#{mbRezervacija.listaRezervacija}" var="rezervacija"                                              
-                                             rowKey="#{rezervacija.rezervacijaID}"
-                                             >                                   
-
-                                    <p:column filterBy="#{rezervacija.raspored.zaposleni.imePrezime}" headerText="Zaposleni">
-                                        #{rezervacija.raspored.zaposleni.imePrezime}
-                                    </p:column>
-                                    <p:column filterBy="#{rezervacija.raspored.tretman.opis}" headerText="Tretman">
-                                        #{rezervacija.raspored.tretman.opis}
-                                    </p:column>
-                                    <!--filtriranje po datumu-->
-                                    <p:column  filterBy=" #{rezervacija.vreme.date}" filterMatchMode="contains" headerText="Vreme">
-                                        <h:outputText value="#{rezervacija.vreme}">
-                                            <f:convertDateTime 
-                                                pattern="dd/MM/yyyy HH:mm:ss" />
-                                        </h:outputText> 
-                                    </p:column>                                   
-                                </p:dataTable>
-
-
-                                <br/>                             
-                            </p:panel>
-
-
-
-                        </div>
-                    </h:form>
-
-                </div>
-
-
-
-            </ui:define>
-
+                </ui:define>
+            
         </ui:composition>
 
     </body>

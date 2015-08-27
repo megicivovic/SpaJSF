@@ -6,9 +6,12 @@
 package model;
 
 import entities.Raspored;
+import entities.Rezervacija;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,5 +30,18 @@ public class RasporedFacade extends AbstractFacade<Raspored> {
     public RasporedFacade() {
         super(Raspored.class);
     }
+
+    public Raspored findByProperty(int[] params) {
+      Query query = em.createQuery("FROM Raspored r where r.tretman.tretmanID = :value1 and r.zaposleni.zaposleniID= :value2");
+        query.setParameter("value1", params[0]);
+        query.setParameter("value2", params[1]);
+        List<Raspored> results = query.getResultList();
+        if (results.size()==1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
+    
     
 }

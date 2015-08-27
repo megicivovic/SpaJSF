@@ -43,5 +43,16 @@ public class KlijentFacade extends AbstractFacade<Klijent> {
             return null;
         }
     }
+ 
+    public Object findByUsername(String username){
+          Query query = em.createQuery("FROM Klijent k where k.korisnickoIme = :value1");
+        query.setParameter("value1", username);       
+        List<Klijent> results = query.getResultList();
+        if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }
