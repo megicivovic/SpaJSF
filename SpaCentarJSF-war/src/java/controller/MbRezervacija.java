@@ -144,15 +144,15 @@ public class MbRezervacija {
         List<Rezervacija> rezervacijeZaposlenog = rezervacijaFacade.findByProperty(params[1]);
 
         if (rezervacijeZaposlenog != null) {
-            for (Rezervacija rezervacija : rezervacijeZaposlenog) {
+            for (Rezervacija rezervacija1 : rezervacijeZaposlenog) {
                 //vreme zavrsetka tretmana
                 Tretman tretman = tretmanFacade.findByProperty(rezervacija.getRaspored().getTretman().getTretmanID());
 
                 Calendar vremePocetka = new GregorianCalendar();
-                vremePocetka.setTime(rezervacija.getVreme());
+                vremePocetka.setTime(rezervacija1.getVreme());
 
                 Calendar vremeZavrsetka = new GregorianCalendar();
-                vremeZavrsetka.setTime(rezervacija.getVreme());
+                vremeZavrsetka.setTime(rezervacija1.getVreme());
                 vremeZavrsetka.add(Calendar.MINUTE, tretman.getTrajanjeUMin());
 
                 //trazeno vreme
@@ -165,15 +165,16 @@ public class MbRezervacija {
 
                 if (!(trazenoVreme.after(vremeZavrsetka) || trazenoVremeZavrsetka.before(vremePocetka))) {
                     raspolozivost = false;
-                    throw new Exception("Ne mozete rezervisati traženi termin!");
+                    throw new Exception("Sistem ne može da zapamti rezervaciju!");
                 }
             }
         }
         if (raspolozivost) {
             System.out.println("Ubacujem rezervaciju korisnika " + mbKorisnik.getKorisnik());
             rezervacijaFacade.create(rezervacija);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sistem je zapamtio rezervaciju!", ""));
         } else {
-            
+
         }
     }
 
@@ -223,6 +224,6 @@ public class MbRezervacija {
 
     public void setDatum(Date datum) {
         this.datum = datum;
-    }       
+    }
 
 }

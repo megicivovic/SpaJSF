@@ -42,16 +42,8 @@
                                             <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" />
                                         </div></br>
                                     <br><div align="center" draggable="false" >
-                                            <p:commandButton value="Sacuvaj rezervaciju" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
-                                        </div></br>
-                                    <p:dialog modal="true" resizable="false" header="Values" widgetVar="dlg" showEffect="fold">
-                                        <p:panelGrid id="display" columns="2" columnClasses="label,value">
-                                            <h:outputText value="Datetime:" />
-                                            <h:outputText value="#{calendarView.date10}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
-                                            </h:outputText>
-                                        </p:panelGrid>
-                                    </p:dialog>
+                                            <p:commandButton value="Sacuvaj rezervaciju"  update="grwPoruke" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
+                                        </div></br>                                   
                                 </p:panel>
 
                             </h:form>

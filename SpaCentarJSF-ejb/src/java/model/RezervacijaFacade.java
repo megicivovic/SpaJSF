@@ -45,7 +45,7 @@ public class RezervacijaFacade extends AbstractFacade<Rezervacija> {
         
     }
     public List<Rezervacija> findByProperty(int param) {
-         Query query = em.createQuery("FROM Rezervacija r where r.zaposleniID= :value1");
+         Query query = em.createQuery("FROM Rezervacija r where r.raspored.zaposleni.zaposleniID= :value1");
         query.setParameter("value1", param);       
         List<Rezervacija> results = query.getResultList();
         if (results.size()>0) {
