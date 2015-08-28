@@ -37,9 +37,12 @@
                                         <p:ajax event="rowSelect" update="@this" />
                                     </p:dataTable>
 
-                                    <br><div align="center" draggable="false" >
+                                    <br><div id="datum" align="center" draggable="false" >
                                             <p:outputLabel for="datetime" value="Datum rezervacije" />
-                                            <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                            <p:calendar id="datetime" value="#{mbRezervacija.rezervacija.vreme}" pattern="dd/MM/yyyy HH:mm:ss" >
+                                                <f:validator validatorId="datVal"/>
+                                            </p:calendar>
+                                            <h:message for="datetime" />
                                         </div></br>
                                     <br><div align="center" draggable="false" >
                                             <p:commandButton value="Sacuvaj rezervaciju"  update="grwPoruke" actionListener="#{mbRezervacija.sacuvajRezervaciju()}" icon="ui-icon-check" />
