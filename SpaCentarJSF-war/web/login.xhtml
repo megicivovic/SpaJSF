@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
         <title>Prijavljivanje</title>
@@ -23,24 +24,29 @@
                     </div>
                     <div id="content" class="left_content">
                         <ui:insert name="content">
+                            <p:growl id="grwPoruke"/>
+                           
                             <div>
                                 <h:outputText value="Korisnicko ime:"/>
                             </div>
                             <div>
-                                <h:inputText value="#{mbKorisnik.korisnik.korisnickoIme}"/>
-
+                                <h:inputText value="#{mbKorisnik.korisnik.korisnickoIme}" id="korisnickoIme">
+                                    <f:validateLength minimum="3" maximum="20"/>
+                                </h:inputText>
+                                  <f:ajax event="keypress" render="porukaKI" />   
+                                <h:message id="porukaKI" for="korisnickoIme" style="color:red" />
                             </div>
                             <div>
                                 <h:outputText value="Korisnicka šifra:"/>
                             </div>
                             <div>
                                 <p:password value="#{mbKorisnik.korisnik.korisnickaSifra}"/>
-
                             </div>
                             <div>
                                 <h:commandButton styleClass="button" value="Uloguj se" action="#{mbKorisnik.ulogujSe}"/>
                                 <h:commandLink value="Registruj se" action="registracija.xhtml" immediate="true" />         
                             </div>
+                            
                         </ui:insert>
 
                     </div>    

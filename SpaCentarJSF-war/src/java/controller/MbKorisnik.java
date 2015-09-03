@@ -6,11 +6,12 @@
 package controller;
 
 import entities.Klijent;
-import entities.Tretman;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import model.KlijentFacade;
 
 /**
@@ -23,16 +24,18 @@ public class MbKorisnik {
 
     @EJB
     private KlijentFacade klijentFacade;
-    private  Klijent korisnik;
+    private Klijent korisnik;
+
 
     public MbKorisnik() {
     }
 
     @PostConstruct
     public void inicijalizujPodatke() {
-       korisnik = new Klijent();
+      
+        korisnik = new Klijent();
     }
-    
+
     public KlijentFacade getKlijentFacade() {
         return klijentFacade;
     }
@@ -41,7 +44,7 @@ public class MbKorisnik {
         this.klijentFacade = klijentFacade;
     }
 
-    public  Klijent getKorisnik() {
+    public Klijent getKorisnik() {
         return korisnik;
     }
 
@@ -56,10 +59,19 @@ public class MbKorisnik {
         korisnickoIme[1] = korisnik.getKorisnickaSifra();
         Klijent ulogovaniKorisnik = (Klijent) klijentFacade.findByProperty(korisnickoIme);
         if (ulogovaniKorisnik != null) {
-            korisnik=ulogovaniKorisnik;
-            return "index?faces-redirect=true";
+            korisnik = ulogovaniKorisnik;
+           //  FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("auth", korisnik);
+
+            if (ulogovaniKorisnik.getKorisnickoIme().equals("admin")) {
+                return "index?faces-redirect=true";
+            } else {
+                return "unosRezervacije";
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Neispravno korisničko ime ili šifra!", ""));
+            return "login";
         }
-        else return "login";
     }
 
+  
 }

@@ -8,17 +8,21 @@ package controller;
 import entities.Raspored;
 import entities.Rezervacija;
 import entities.Tretman;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.RasporedFacade;
@@ -26,14 +30,13 @@ import model.RezervacijaFacade;
 import model.TretmanFacade;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.data.FilterEvent;
 
 /**
  *
  * @author Megi
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class MbRezervacija {
 
     @EJB
@@ -95,6 +98,9 @@ public class MbRezervacija {
     }
 
     public List<Raspored> getListaRasporeda() {
+        if (listaRasporeda==null){
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sistem ne može da pronađe nijedan tretman!", ""));
+        }
         return listaRasporeda;
     }
 
@@ -102,79 +108,99 @@ public class MbRezervacija {
         this.listaRasporeda = listaRasporeda;
     }
 
-    public void filterListener(FilterEvent filterEvent) {
-        filtriranaListaRezervacija = new ArrayList<>();
-        if (datum != null) {
-            for (Rezervacija r : listaRezervacija) {
-                if (r.getVreme().equals(datum)) {
-                    filtriranaListaRezervacija.add(r);
-                }
-            }
+    public boolean filtrirajPoDatumu(Object value, Object filter, Locale locale) {
+        String filterText = (filter == null) ? null : filter.toString().trim();
+        if (filterText == null || filterText.equals("")) {
+            return true;
         }
-    }
+        if (value == null) {
+            return false;
+        }
 
-    public void onDateSelect(SelectEvent event) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Date Selected", format.format(event.getObject())));
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+
+        try {
+            Date d = sdf.parse(((String) value).trim());
+            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+            String sDatum = sdf2.format(d);
+            if (sDatum.contains(filterText)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(MbRezervacija.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
     }
 
     public void sacuvajRezervaciju() throws Exception {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        requestContext.update("form:display");
-        requestContext.execute("PF('dlg').show()");
+        if (rezervacija.getRaspored() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Morate izabrati zaposlenog i tretman koji želite!", ""));
+        } else {
+            if (rezervacija.getVreme() == null) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Morate izabrati datum tretmana!", ""));
+            } else {
+                if (mbKorisnik.getKorisnik() == null) {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Niste ulogovani!", ""));
+                } else {
+                    rezervacija.setKlijentID(mbKorisnik.getKorisnik());
+                    int[] params = new int[2];
+                    params[0] = rezervacija.getRaspored().getTretman().getTretmanID();
+                    params[1] = rezervacija.getRaspored().getZaposleni().getZaposleniID();
 
-        rezervacija.setKlijentID(mbKorisnik.getKorisnik());
-        int[] params = new int[2];
-        params[0] = rezervacija.getRaspored().getTretman().getTretmanID();
-        params[1] = rezervacija.getRaspored().getZaposleni().getZaposleniID();
+                    List<Rezervacija> rezervacije = rezervacijaFacade.findByProperty(params);
 
-        List<Rezervacija> rezervacije = rezervacijaFacade.findByProperty(params);
+                    Raspored raspored = rasporedFacade.findByProperty(params);
+                    int brTermina = raspored.getBrojTermina();
 
-        Raspored raspored = rasporedFacade.findByProperty(params);
-        int brTermina = raspored.getBrojTermina();
+                    if (rezervacije != null) {
+                        if (rezervacije.size() >= brTermina) {
+                            raspolozivost = false;
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Zaposleni koga ste izabrali nema slobodnih termina!", ""));
+                            //throw new Exception("Zaposleni koga ste izabrali nema slobodnih termina!");
+                        }
+                    }
 
-        if (rezervacije != null) {
-            if (rezervacije.size() >= brTermina) {
-                raspolozivost = false;
-                throw new Exception("Zaposleni koga ste izabrali nema slobodnih termina!");
-            }
-        }
+                    List<Rezervacija> rezervacijeZaposlenog = rezervacijaFacade.findByProperty(params[1]);
 
-        List<Rezervacija> rezervacijeZaposlenog = rezervacijaFacade.findByProperty(params[1]);
+                    if (rezervacijeZaposlenog != null) {
+                        for (Rezervacija rezervacija1 : rezervacijeZaposlenog) {
+                            //vreme zavrsetka tretmana
+                            Tretman tretman = tretmanFacade.findByProperty(rezervacija.getRaspored().getTretman().getTretmanID());
 
-        if (rezervacijeZaposlenog != null) {
-            for (Rezervacija rezervacija1 : rezervacijeZaposlenog) {
-                //vreme zavrsetka tretmana
-                Tretman tretman = tretmanFacade.findByProperty(rezervacija.getRaspored().getTretman().getTretmanID());
+                            Calendar vremePocetka = new GregorianCalendar();
+                            vremePocetka.setTime(rezervacija1.getVreme());
 
-                Calendar vremePocetka = new GregorianCalendar();
-                vremePocetka.setTime(rezervacija1.getVreme());
+                            Calendar vremeZavrsetka = new GregorianCalendar();
+                            vremeZavrsetka.setTime(rezervacija1.getVreme());
+                            vremeZavrsetka.add(Calendar.MINUTE, tretman.getTrajanjeUMin());
 
-                Calendar vremeZavrsetka = new GregorianCalendar();
-                vremeZavrsetka.setTime(rezervacija1.getVreme());
-                vremeZavrsetka.add(Calendar.MINUTE, tretman.getTrajanjeUMin());
+                            //trazeno vreme
+                            Calendar trazenoVreme = new GregorianCalendar();
+                            trazenoVreme.setTime(rezervacija.getVreme());
 
-                //trazeno vreme
-                Calendar trazenoVreme = new GregorianCalendar();
-                trazenoVreme.setTime(rezervacija.getVreme());
+                            Calendar trazenoVremeZavrsetka = new GregorianCalendar();
+                            trazenoVremeZavrsetka.setTime(rezervacija.getVreme());
+                            trazenoVremeZavrsetka.add(Calendar.MINUTE, tretman.getTrajanjeUMin());
 
-                Calendar trazenoVremeZavrsetka = new GregorianCalendar();
-                trazenoVremeZavrsetka.setTime(rezervacija.getVreme());
-                trazenoVremeZavrsetka.add(Calendar.MINUTE, tretman.getTrajanjeUMin());
-
-                if (!(trazenoVreme.after(vremeZavrsetka) || trazenoVremeZavrsetka.before(vremePocetka))) {
-                    raspolozivost = false;
-                    throw new Exception("Sistem ne može da zapamti rezervaciju!");
+                            if (!(trazenoVreme.after(vremeZavrsetka) || trazenoVremeZavrsetka.before(vremePocetka))) {
+                                raspolozivost = false;
+                        //FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sistem ne može da zapamti rezervaciju", ""));
+                                //throw new Exception("Sistem ne može da zapamti rezervaciju!");
+                            }
+                        }
+                    }
+                    if (raspolozivost) {
+                        System.out.println("Ubacujem rezervaciju korisnika " + mbKorisnik.getKorisnik());
+                        rezervacijaFacade.create(rezervacija);
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sistem je zapamtio rezervaciju!", ""));
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sistem ne može da zapamti rezervaciju!", ""));
+                    }
                 }
             }
-        }
-        if (raspolozivost) {
-            System.out.println("Ubacujem rezervaciju korisnika " + mbKorisnik.getKorisnik());
-            rezervacijaFacade.create(rezervacija);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sistem je zapamtio rezervaciju!", ""));
-        } else {
-
         }
     }
 

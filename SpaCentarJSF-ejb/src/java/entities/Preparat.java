@@ -52,13 +52,14 @@ public class Preparat implements Serializable {
     @NotNull
     @Column(name = "cena")
     private double cena;
-    @ManyToMany(mappedBy = "preparatList")
-    private List<Tretman> tretmanList;
+   // @ManyToMany(mappedBy = "preparatList")
+   // private List<Tretman> tretmanList;
     @JoinColumn(name = "proizvodjac", referencedColumnName = "kompanijaID")
     @ManyToOne(optional = false)
     private Kompanija proizvodjac;
 
     public Preparat() {
+     proizvodjac=new Kompanija();
     }
 
     public Preparat(Integer preparatID) {
@@ -95,14 +96,14 @@ public class Preparat implements Serializable {
         this.cena = cena;
     }
 
-    @XmlTransient
-    public List<Tretman> getTretmanList() {
-        return tretmanList;
-    }
-
-    public void setTretmanList(List<Tretman> tretmanList) {
-        this.tretmanList = tretmanList;
-    }
+//    @XmlTransient
+//    public List<Tretman> getTretmanList() {
+//        return tretmanList;
+//    }
+//
+//    public void setTretmanList(List<Tretman> tretmanList) {
+//        this.tretmanList = tretmanList;
+//    }
 
     public Kompanija getProizvodjac() {
         return proizvodjac;

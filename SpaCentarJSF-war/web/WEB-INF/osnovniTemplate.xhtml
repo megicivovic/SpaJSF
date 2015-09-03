@@ -15,41 +15,51 @@
 
     <h:body>
         <p:panel>
-            <ui:insert name="top">  <div style="background: #ece3a5; font-size: x-large">Dobrodošli u SPA-M!</div></ui:insert>
-
+            <ui:insert name="top">  
+            </ui:insert>
             <div id="top" class="top">
-                <h:form>
+                <div style="background: #ece3a5; font-size: x-large">Dobrodošli u SPA-M,#{mbKorisnik.korisnik.imePrezime}!</div>
+                <br/>    
+                <ui:insert name="menu">
+                    <h:form>
 
-                    <p:menubar>
-                        <p:submenu label="Tretmani">
-                            <p:menuitem value="Unos tretmana" action="unosTretmana.xhtml" ajax="false" />
-                            <p:menuitem value="Prikaz tretmana" action="prikazTretmana" ajax="false" />                    
-                        </p:submenu>
-                        <p:submenu label="Preparati">
-                            <p:menuitem value="Unos preparata" action="unosPreparata.xhtml" ajax="false" />                    
-                        </p:submenu>
-                        <p:submenu label="Rezervacije">
-                            <p:menuitem value="Unos rezervacije" action="unosRezervacije.xhtml" ajax="false" />                    
-                        </p:submenu>
+                        <p:menubar>
+                            <p:submenu label="Tretmani">
+                                <p:menuitem value="Unos tretmana" action="unosTretmana.xhtml" ajax="false" />
+                                <p:menuitem value="Prikaz tretmana" action="prikazTretmana.xhtml" ajax="false" />                    
+                            </p:submenu>
+                            <p:submenu label="Preparati">
+                                <p:menuitem value="Unos preparata" action="unosPreparata.xhtml" ajax="false" />                    
+                            </p:submenu>
+                            <p:submenu label="Rezervacije">
+                                <p:menuitem value="Unos rezervacije" action="unosRezervacije.xhtml" ajax="false" />                    
+                            </p:submenu>
 
-                    </p:menubar>
-                    <div>
-                        <br>
-                        <div id="left">
-                            <ui:insert name="left"> Najbolji spa-centar po rečima zadovoljnih klijenata
-                                , osnovan 14.03.2012. godine u Beogradu. </ui:insert>
-                        </div>
-                        <div id="content" class="left_content">
-                            <ui:insert name="content">Najbolji spa-centar po rečima zadovoljnih klijenata
-                                , osnovan 14.03.2012. godine u Beogradu.</ui:insert>
-                        </div>
-                        </br>
-                    </div>
-                </h:form>
+                        </p:menubar>
+                    </h:form>
+                </ui:insert>
+            </div>
+        </p:panel>
+        <div>
 
+            <div id="left" style="width:12% ">
+                <ui:insert name="left">Najbolji spa-centar po rečima zadovoljnih klijenata
+                    , osnovan 14.03.2012. godine u Beogradu.
+
+                </ui:insert>
             </div>
 
-        </p:panel>
+            <div id="content" class="left_content" style="background:white">
+                <ui:insert name="content">                      
+                </ui:insert>
+            </div>
+            <br/>
+            <br/>
+        </div>
+
+
+
+
     </h:body>
 
 </html>

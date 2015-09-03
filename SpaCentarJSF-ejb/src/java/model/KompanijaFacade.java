@@ -6,9 +6,11 @@
 package model;
 
 import entities.Kompanija;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -26,6 +28,17 @@ public class KompanijaFacade extends AbstractFacade<Kompanija> {
 
     public KompanijaFacade() {
         super(Kompanija.class);
+    }
+
+    public Kompanija findByProperty(int id) {
+        Query query = em.createQuery("FROM Kompanija k where k.kompanijaID = :value1");
+        query.setParameter("value1", id);   
+        List<Kompanija> results = query.getResultList();
+        if (results.size()==1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
     }
     
 }

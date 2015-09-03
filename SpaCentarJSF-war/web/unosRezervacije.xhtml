@@ -10,13 +10,18 @@
 
         <ui:composition template="./WEB-INF/osnovniTemplate.xhtml">
 
+            <ui:define name="top"/>
+            <ui:define name ="menu"/>
+
+            <div >
+               
                 <ui:define name="content">
 
                     <div align="center">
 
                         <div align="left" style="float: left;width: 45%;">
-                            <h:form id="frmTretman">  
-                                <p:growl id="grwPoruke" />
+                            <h:form id="frmTretman1">  
+                                <p:growl id="grwPoruke"/>
                                 <p:panel header="Unos rezervacije">
                                     <h:panelGrid id="pnlgTretman" columns="3">
                                         <p:outputLabel value="Raspored:" />                                 
@@ -65,10 +70,10 @@
 
                                 <p:panel header="Pregled raspoloživosti:">
 
-                                    <p:dataTable value="#{mbRezervacija.listaRezervacija}" filteredValue="#{mbRezervacija.filtriranaListaRezervacija}" var="rezervacija"                                              
+                                    <p:dataTable value="#{mbRezervacija.listaRezervacija}" var="rezervacija"                                              
                                                  rowKey="#{rezervacija.rezervacijaID}"
                                                  >                                   
-                                        <p:ajax event="filter" listener="#{mbRezervacija.filterListener}"/>
+
                                         <p:column filterBy="#{rezervacija.raspored.zaposleni.imePrezime}" headerText="Zaposleni">
                                             #{rezervacija.raspored.zaposleni.imePrezime}
                                         </p:column>
@@ -76,7 +81,7 @@
                                             #{rezervacija.raspored.tretman.opis}
                                         </p:column>
                                         <!--filtriranje po datumu-->
-                                        <p:column  filterBy=" #{rezervacija.vreme.date}" filterMatchMode="contains" headerText="Vreme">
+                                        <p:column   filterBy=" #{rezervacija.vreme}" headerText="Vreme" filterFunction="#{mbRezervacija.filtrirajPoDatumu}">
                                             <h:outputText value="#{rezervacija.vreme}">
                                                 <f:convertDateTime 
                                                     pattern="dd/MM/yyyy HH:mm:ss" />
@@ -94,7 +99,7 @@
                         </h:form>
                     </div>
                 </ui:define>
-            
+            </div>
         </ui:composition>
 
     </body>

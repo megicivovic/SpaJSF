@@ -63,7 +63,7 @@ public class DatValidator implements Validator {
 
                 if (zakazanoVreme.before(pocetakRadnogVremena) || zakazanoVreme.after(krajRadnogVremena)) {
                     System.out.println("Validaciija");
-                    throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "fdsfsdfs", "Morate izabrati vreme u okviru našeg radnog vremena!"));
+                    throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Morate izabrati vreme u okviru našeg radnog vremena(12-20h)!", ""));
                 
                 }
 

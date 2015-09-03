@@ -10,19 +10,20 @@
 
         <ui:composition template="./WEB-INF/osnovniTemplate.xhtml">
 
-
-            <ui:define name="content">
+            <ui:define name="content" >
 
                 <div align="center">
 
                     <div align="left" style="float: left;width: 45%;">
-                        <h:form id="frmTretman">  
+                        <h:form id="frmTretman" >  
                             <p:growl id="grwPoruke" />
                             <p:panel header="Unos Tretmana">
                                 <h:panelGrid id="pnlgTretman" columns="3">
 
                                     <p:outputLabel value="Opis tretmana:" />
-                                    <p:inputText id="txtOpis" value="#{mbTretman.trenutniTretman.opis}" />
+                                    <p:inputText id="txtOpis" value="#{mbTretman.trenutniTretman.opis}" >
+                                     <f:validateLength minimum="3" maximum="120"/>
+                                    </p:inputText>
                                     <p:message for="txtOpis" />
 
                                     <p:outputLabel value="Trajanje tretmana u minutima:" />
@@ -42,16 +43,16 @@
                                         #{stavkaPreparat.naziv}
                                     </p:column>
                                     <p:column headerText="Proizvodjac" >
-                                        <p:inputText style="width: 75px" value="#{stavkaPreparat.proizvodjac.naziv}"  />
+                                        <h:outputText style="width: 75px" value="#{stavkaPreparat.proizvodjac.naziv}"  />
                                     </p:column>
                                     <p:column headerText="Cena">
-                                        <p:inputText value="#{stavkaPreparat.cena}" size="10" />
+                                        <h:outputText value="#{stavkaPreparat.cena}"   />
                                     </p:column>
                                     <p:ajax event="rowSelect" update="@this" />
                                 </p:dataTable>
                                 <br><div align="center" draggable="false" >
-                                    <p:commandButton value="Sacuvaj tretman"   action="#{mbTretman.sacuvajTretman()}"/>
-                               </div>
+                                        <p:commandButton value="Sacuvaj tretman"   action="#{mbTretman.sacuvajTretman()}" update=" :frmTretman:grwPoruke"/>
+                                    </div>
                                 </br>
                             </p:panel>
 
@@ -63,9 +64,9 @@
 
                             <br/><br/><br/>
 
-                            <p:commandButton value="&lt;-" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.dodajPreparat()}" />
+                            <p:commandButton value="&lt;-" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati  :frmTretman:grwPoruke" action="#{mbTretman.dodajPreparat()}" />
                             <br/><br/>
-                            <p:commandButton value="-&gt;" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati :frmPreparat:poruke :frmTretman:grwPoruke" action="#{mbTretman.ukloniPreparat()}" />
+                            <p:commandButton value="-&gt;" process=":frmTretman:pnlgTretman @this" update=":frmTretman:tblPreparati  :frmTretman:grwPoruke" action="#{mbTretman.ukloniPreparat()}" />
 
 
 
@@ -73,7 +74,7 @@
 
                         <div align="left" style="float: left;width: 45%;" >
 
-                            <p:messages id="poruke" />
+
 
                             <p:panel header="Obrada preparata">
 
@@ -81,9 +82,6 @@
                                              selectionMode="single" selection="#{mbPreparat.izabraniPreparat}"
                                              rowKey="#{preparat.preparatID}"
                                              > 
-                                    <f:facet name="header">
-                                        <p:commandButton value="Dodaj novi" icon="ui-icon-plus"/>
-                                    </f:facet>
                                     <p:ajax event="rowSelect" process="@this" update=":frmPreparat:pnlgPreparat" />
 
                                     <p:column filterBy="#{preparat.naziv}" headerText="Naziv">
@@ -92,22 +90,18 @@
                                     <p:column headerText="Cena">
                                         #{preparat.cena}
                                     </p:column>
-                                    <p:column  headerText="Proizvodjac">
-                                        #{preparat.proizvodjac.naziv}
-                                    </p:column>
 
                                 </p:dataTable>
 
 
                                 <br/>
-                                <p:separator />
+                              
 
                                 <h:panelGrid id="pnlgPreparat" columns="3">
-
-                                    <p:outputLabel value="Sifra:" />
-                                    <p:inputText id="txtPreparatID" value="#{mbPreparat.izabraniPreparat.preparatID}" readonly="true" />
-                                    <p:message for="txtPreparatID" />
-
+                                    <p:outputLabel value="Detalji preparata:" style="float: left"/>
+                                    <br/>
+                                    <p:separator />
+                                    <div align="left">
                                     <p:outputLabel value="Naziv:" />
                                     <p:inputText id="txtNaziv" value="#{mbPreparat.izabraniPreparat.naziv}" readonly="true" />
                                     <p:message for="txtNaziv" />
@@ -119,6 +113,7 @@
                                     <p:outputLabel value="Proizvodjac:" />
                                     <p:inputText id="txtProizvodjac" value="#{mbPreparat.izabraniPreparat.proizvodjac.naziv}" />
                                     <p:message for="txtProizvodjac" />
+                                    </div>
                                 </h:panelGrid>
 
 

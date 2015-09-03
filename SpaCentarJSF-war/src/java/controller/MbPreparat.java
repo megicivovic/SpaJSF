@@ -7,11 +7,14 @@ package controller;
 
 import entities.Kompanija;
 import entities.Preparat;
+import entities.Tretman;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.KompanijaFacade;
@@ -23,31 +26,42 @@ import model.PreparatFacade;
  */
 @ManagedBean
 @ViewScoped
-public class MbPreparat {
+public class MbPreparat  implements Serializable{
 
     @EJB
     private KompanijaFacade kompanijaFacade;
 
     @EJB
     private PreparatFacade preparatFacade;
-
-    private static boolean izmena = false;
+  
+   
     private Preparat preparat;
     private Preparat izabraniPreparat;
     private Preparat preparatZaBrisanje;
     List<Kompanija> listaProizvodjaca;
     List<Preparat> listaPreparata;
+    
+    private Tretman tretman;
+    
 
     public MbPreparat() {
+          preparat=new Preparat();
+          tretman=new  Tretman();
+        
     }
 
     @PostConstruct
-    public void inicijalizujPodatke() {
+    public void inicijalizujPodatke() {      
         listaProizvodjaca = kompanijaFacade.findAll();
         listaPreparata = preparatFacade.findAll();
     }
 
+    
+    
     public List<Preparat> getListaPreparata() {
+        if (listaPreparata==null){
+          FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Sistem ne može da pronađe nijedan preparat" , ""));
+        }
         return listaPreparata;
     }
 
@@ -63,13 +77,6 @@ public class MbPreparat {
         this.listaProizvodjaca = listaProizvodjaca;
     }
 
-    public boolean isIzmena() {
-        return izmena;
-    }
-
-    public void setIzmena(boolean izmena) {
-        MbPreparat.izmena = izmena;
-    }
 
     public Preparat getPreparat() {
         return preparat;
@@ -92,7 +99,7 @@ public class MbPreparat {
     
     
     
-    public String sacuvajPreparat() {
+    public String  sacuvajPreparat() {
 
         try {
             System.out.println("Preparat:" + preparat.getNaziv());
@@ -101,7 +108,7 @@ public class MbPreparat {
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Preparat nije uspesno sacuvan!!!", ex.getMessage()));
         }
-        return null;
+        return "unosPreparata";
 
     }
 
@@ -113,6 +120,15 @@ public class MbPreparat {
         this.preparatZaBrisanje = preparatZaBrisanje;
     }
 
+    public Tretman getTretman() {
+        return tretman;
+    }
+
+    public void setTretman(Tretman tretman) {
+        this.tretman = tretman;
+    }
+
+  
     
 
 }

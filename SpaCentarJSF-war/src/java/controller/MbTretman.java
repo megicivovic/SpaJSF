@@ -32,30 +32,36 @@ public class MbTretman {
     @EJB
     private TretmanFacade tretmanFacade;
 
-    private static boolean izmena = false; 
+    private static boolean izmena = false;
+
     private static Tretman trenutniTretman;
 
-     @ManagedProperty(value = "#{mbPreparat}")
+    @ManagedProperty(value = "#{mbPreparat}")
     private MbPreparat mbPreparat;
 
     public MbTretman() {
+
     }
 
     @PostConstruct
     public void inicijalizujPodatke() {
-        if (!izmena)
-        trenutniTretman = new Tretman();       
+        if (!izmena) {
+            trenutniTretman = mbPreparat.getTretman();
+        }
     }
 
     public List<Tretman> findAll() {
-
+        if (this.tretmanFacade.findAll() == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sistem ne može da pronađe nijedan tretman", ""));
+        }
         return this.tretmanFacade.findAll();
+
     }
 
     public String pokreniIzmenu(Tretman tretman) {
 
         setTrenutniTretman(tretman);
-     izmena = true;
+        izmena = true;
 
         return "unosTretmana";
 
@@ -65,24 +71,38 @@ public class MbTretman {
 
         try {
             double cena = 0;
-            for (Preparat preparat : trenutniTretman.getPreparatList()) {
-                cena += preparat.getCena();
-            }
-            trenutniTretman.setCena(cena);
-            if (izmena) {
-                tretmanFacade.edit(trenutniTretman);
-                System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno izmenjen");
+            if (trenutniTretman.getPreparatList().size() == 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sistem ne može da kreira novi tretman: " + trenutniTretman.getOpis(), ""));
 
             } else {
+                for (Preparat preparat : trenutniTretman.getPreparatList()) {
+                    cena += preparat.getCena();
+                }
+                trenutniTretman.setCena(cena);
+                if (izmena) {
+                    tretmanFacade.edit(trenutniTretman);
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Tretman:" + trenutniTretman.getOpis() + " je uspešno izmenjen", ""));
+                   
+                    System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno izmenjen");
+                    izmena = false;
 
-                tretmanFacade.create(trenutniTretman);
-                System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno kreiran");
+                } else {
+
+                    tretmanFacade.create(trenutniTretman);
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Tretman: " + trenutniTretman.getOpis() + " je uspešno kreiran", ""));
+                   
+                    System.out.println("Tretman:" + trenutniTretman.getOpis() + " je uspesno kreiran");
+
+                }
 
             }
 
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Uspesno je sacuvan tretman!!!", "Tretman je sacuvan u bazi podataka"));
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Tretman nije uspesno sacuvan!!!", ex.getMessage()));
+            if (!izmena) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Sistem ne može da kreira novi tretman. " + trenutniTretman.getOpis(), ex.getMessage()));
+            } else {
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nije moguće sačuvati podatke o tretmanu", ex.getMessage()));
+            }
         }
         return null;
 
@@ -134,7 +154,6 @@ public class MbTretman {
         this.izmena = izmena;
     }
 
-     
     public Tretman getTrenutniTretman() {
         return trenutniTretman;
     }
