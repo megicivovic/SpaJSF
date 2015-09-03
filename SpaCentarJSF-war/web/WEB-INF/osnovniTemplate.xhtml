@@ -34,7 +34,9 @@
                             <p:submenu label="Rezervacije">
                                 <p:menuitem value="Unos rezervacije" action="unosRezervacije.xhtml" ajax="false" />                    
                             </p:submenu>
-
+                            <p:submenu label="Logout">
+                                <p:menuitem rendered="#{mbKorisnik.korisnik!=null}" value="Logout" action="logout.xhtml" ajax="false" />                    
+                            </p:submenu>
                         </p:menubar>
                     </h:form>
                 </ui:insert>

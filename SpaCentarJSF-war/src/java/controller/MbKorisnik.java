@@ -6,6 +6,7 @@
 package controller;
 
 import entities.Klijent;
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -20,19 +21,19 @@ import model.KlijentFacade;
  */
 @ManagedBean
 @SessionScoped
-public class MbKorisnik {
+public class MbKorisnik implements Serializable {
 
     @EJB
     private KlijentFacade klijentFacade;
     private Klijent korisnik;
-
+    public boolean isLogged=false;
 
     public MbKorisnik() {
     }
 
     @PostConstruct
     public void inicijalizujPodatke() {
-      
+
         korisnik = new Klijent();
     }
 
@@ -60,18 +61,17 @@ public class MbKorisnik {
         Klijent ulogovaniKorisnik = (Klijent) klijentFacade.findByProperty(korisnickoIme);
         if (ulogovaniKorisnik != null) {
             korisnik = ulogovaniKorisnik;
-           //  FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("auth", korisnik);
+           isLogged=true;
 
             if (ulogovaniKorisnik.getKorisnickoIme().equals("admin")) {
-                return "index?faces-redirect=true";
+                return "index.xhtml?faces-redirect=true";
             } else {
-                return "unosRezervacije";
+                return "unosRezervacije.xhtml?faces-redirect=true";
             }
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Neispravno korisničko ime ili šifra!", ""));
-            return "login";
+            return "login.xhtml?faces-redirect=true";
         }
     }
 
-  
 }

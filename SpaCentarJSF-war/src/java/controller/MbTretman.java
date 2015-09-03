@@ -7,13 +7,13 @@ package controller;
 
 import entities.Preparat;
 import entities.Tretman;
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import model.PreparatFacade;
@@ -25,7 +25,7 @@ import model.TretmanFacade;
  */
 @ManagedBean
 @ViewScoped
-public class MbTretman {
+public class MbTretman implements Serializable {
 
     @EJB
     private PreparatFacade preparatFacade;

@@ -7,7 +7,6 @@ package controller;
 
 import entities.Kompanija;
 import entities.Preparat;
-import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -24,7 +23,7 @@ import model.PreparatFacade;
  */
 @ManagedBean
 @RequestScoped
-public class MbUnosPreparata implements Serializable {
+public class MbUnosPreparata {
 
     @EJB
     private KompanijaFacade kompanijaFacade;
